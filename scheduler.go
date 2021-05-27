@@ -714,7 +714,7 @@ func (s *Scheduler) StartAt(t time.Time) *Scheduler {
 }
 
 // setUnit sets the unit type
-func (s *Scheduler) setUnit(unit schedulingUnit) {
+func (s *Scheduler) SetUnit(unit schedulingUnit) {
 	job := s.getCurrentJob()
 	currentUnit := job.getUnit()
 	if currentUnit == duration || currentUnit == crontab {
@@ -731,7 +731,7 @@ func (s *Scheduler) Millisecond() *Scheduler {
 
 // Milliseconds sets the unit with seconds
 func (s *Scheduler) Milliseconds() *Scheduler {
-	s.setUnit(milliseconds)
+	s.SetUnit(milliseconds)
 	return s
 }
 
@@ -742,7 +742,7 @@ func (s *Scheduler) Second() *Scheduler {
 
 // Seconds sets the unit with seconds
 func (s *Scheduler) Seconds() *Scheduler {
-	s.setUnit(seconds)
+	s.SetUnit(seconds)
 	return s
 }
 
@@ -753,7 +753,7 @@ func (s *Scheduler) Minute() *Scheduler {
 
 // Minutes sets the unit with minutes
 func (s *Scheduler) Minutes() *Scheduler {
-	s.setUnit(minutes)
+	s.SetUnit(minutes)
 	return s
 }
 
@@ -764,31 +764,31 @@ func (s *Scheduler) Hour() *Scheduler {
 
 // Hours sets the unit with hours
 func (s *Scheduler) Hours() *Scheduler {
-	s.setUnit(hours)
+	s.SetUnit(hours)
 	return s
 }
 
 // Day sets the unit with days
 func (s *Scheduler) Day() *Scheduler {
-	s.setUnit(days)
+	s.SetUnit(days)
 	return s
 }
 
 // Days set the unit with days
 func (s *Scheduler) Days() *Scheduler {
-	s.setUnit(days)
+	s.SetUnit(days)
 	return s
 }
 
 // Week sets the unit with weeks
 func (s *Scheduler) Week() *Scheduler {
-	s.setUnit(weeks)
+	s.SetUnit(weeks)
 	return s
 }
 
 // Weeks sets the unit with weeks
 func (s *Scheduler) Weeks() *Scheduler {
-	s.setUnit(weeks)
+	s.SetUnit(weeks)
 	return s
 }
 
@@ -802,7 +802,7 @@ func (s *Scheduler) Months(dayOfTheMonth int) *Scheduler {
 	job := s.getCurrentJob()
 	job.dayOfTheMonth = dayOfTheMonth
 	job.startsImmediately = false
-	s.setUnit(months)
+	s.SetUnit(months)
 	return s
 }
 
@@ -820,7 +820,7 @@ func (s *Scheduler) Weekday(weekDay time.Weekday) *Scheduler {
 	}
 
 	job.startsImmediately = false
-	s.setUnit(weeks)
+	s.SetUnit(weeks)
 	return s
 }
 
