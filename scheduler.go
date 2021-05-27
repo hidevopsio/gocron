@@ -190,21 +190,21 @@ func (s *Scheduler) durationToNextRun(lastRun time.Time, job *Job) time.Duration
 
 	var d time.Duration
 	switch job.getUnit() {
-	case milliseconds, seconds, minutes, hours:
+	case Milliseconds, Seconds, Minutes, Hours:
 		d = s.calculateDuration(job)
-	case days:
+	case Days:
 		d = s.calculateDays(job, lastRun)
-	case weeks:
+	case Weeks:
 		if len(job.scheduledWeekday) != 0 { // weekday selected, Every().Monday(), for example
 			d = s.calculateWeekday(job, lastRun)
 		} else {
 			d = s.calculateWeeks(job, lastRun)
 		}
-	case months:
+	case Months:
 		d = s.calculateMonths(job, lastRun)
-	case duration:
+	case Duration:
 		d = job.getDuration()
-	case crontab:
+	case Crontab:
 		d = job.cronSchedule.Next(lastRun).Sub(lastRun)
 	}
 	return d
@@ -318,11 +318,11 @@ func (s *Scheduler) calculateDuration(job *Job) time.Duration {
 
 	interval := job.interval
 	switch job.getUnit() {
-	case milliseconds:
+	case Milliseconds:
 		return time.Duration(interval) * time.Millisecond
-	case seconds:
+	case Seconds:
 		return time.Duration(interval) * time.Second
-	case minutes:
+	case Minutes:
 		return time.Duration(interval) * time.Minute
 	default:
 		return time.Duration(interval) * time.Hour
@@ -412,7 +412,7 @@ func (s *Scheduler) Every(interval interface{}) *Scheduler {
 			job.interval = 0
 		}
 		job.setDuration(interval)
-		job.setUnit(duration)
+		job.setUnit(Duration)
 	case string:
 		if !s.updateJob {
 			job = s.newJob(0)
@@ -424,7 +424,7 @@ func (s *Scheduler) Every(interval interface{}) *Scheduler {
 			job.error = wrapOrError(job.error, err)
 		}
 		job.setDuration(d)
-		job.setUnit(duration)
+		job.setUnit(Duration)
 	default:
 		if !s.updateJob {
 			job = s.newJob(0)
@@ -619,11 +619,11 @@ func (s *Scheduler) Do(jobFun interface{}, params ...interface{}) (*Job, error) 
 	job := s.getCurrentJob()
 
 	jobUnit := job.getUnit()
-	if job.atTime != 0 && (jobUnit <= hours || jobUnit >= duration) {
+	if job.atTime != 0 && (jobUnit <= Hours || jobUnit >= Duration) {
 		job.error = wrapOrError(job.error, ErrAtTimeNotSupported)
 	}
 
-	if len(job.scheduledWeekday) != 0 && jobUnit != weeks {
+	if len(job.scheduledWeekday) != 0 && jobUnit != Weeks {
 		job.error = wrapOrError(job.error, ErrWeekdayNotSupported)
 	}
 
@@ -717,7 +717,7 @@ func (s *Scheduler) StartAt(t time.Time) *Scheduler {
 func (s *Scheduler) SetUnit(unit schedulingUnit) {
 	job := s.getCurrentJob()
 	currentUnit := job.getUnit()
-	if currentUnit == duration || currentUnit == crontab {
+	if currentUnit == Duration || currentUnit == Crontab {
 		job.error = wrapOrError(job.error, ErrInvalidIntervalUnitsSelection)
 		return
 	}
@@ -731,7 +731,7 @@ func (s *Scheduler) Millisecond() *Scheduler {
 
 // Milliseconds sets the unit with seconds
 func (s *Scheduler) Milliseconds() *Scheduler {
-	s.SetUnit(milliseconds)
+	s.SetUnit(Milliseconds)
 	return s
 }
 
@@ -742,7 +742,7 @@ func (s *Scheduler) Second() *Scheduler {
 
 // Seconds sets the unit with seconds
 func (s *Scheduler) Seconds() *Scheduler {
-	s.SetUnit(seconds)
+	s.SetUnit(Seconds)
 	return s
 }
 
@@ -753,7 +753,7 @@ func (s *Scheduler) Minute() *Scheduler {
 
 // Minutes sets the unit with minutes
 func (s *Scheduler) Minutes() *Scheduler {
-	s.SetUnit(minutes)
+	s.SetUnit(Minutes)
 	return s
 }
 
@@ -764,31 +764,31 @@ func (s *Scheduler) Hour() *Scheduler {
 
 // Hours sets the unit with hours
 func (s *Scheduler) Hours() *Scheduler {
-	s.SetUnit(hours)
+	s.SetUnit(Hours)
 	return s
 }
 
 // Day sets the unit with days
 func (s *Scheduler) Day() *Scheduler {
-	s.SetUnit(days)
+	s.SetUnit(Days)
 	return s
 }
 
 // Days set the unit with days
 func (s *Scheduler) Days() *Scheduler {
-	s.SetUnit(days)
+	s.SetUnit(Days)
 	return s
 }
 
 // Week sets the unit with weeks
 func (s *Scheduler) Week() *Scheduler {
-	s.SetUnit(weeks)
+	s.SetUnit(Weeks)
 	return s
 }
 
 // Weeks sets the unit with weeks
 func (s *Scheduler) Weeks() *Scheduler {
-	s.SetUnit(weeks)
+	s.SetUnit(Weeks)
 	return s
 }
 
@@ -802,7 +802,7 @@ func (s *Scheduler) Months(dayOfTheMonth int) *Scheduler {
 	job := s.getCurrentJob()
 	job.dayOfTheMonth = dayOfTheMonth
 	job.startsImmediately = false
-	s.SetUnit(months)
+	s.SetUnit(Months)
 	return s
 }
 
@@ -820,7 +820,7 @@ func (s *Scheduler) Weekday(weekDay time.Weekday) *Scheduler {
 	}
 
 	job.startsImmediately = false
-	s.SetUnit(weeks)
+	s.SetUnit(Weeks)
 	return s
 }
 
@@ -934,7 +934,7 @@ func (s *Scheduler) cron(cronExpression string, withSeconds bool) *Scheduler {
 	}
 
 	job.cronSchedule = cronSchedule
-	job.unit = crontab
+	job.unit = Crontab
 	job.startsImmediately = false
 
 	s.setJobs(append(s.Jobs(), job))

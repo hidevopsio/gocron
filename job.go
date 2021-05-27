@@ -63,7 +63,7 @@ func newJob(interval int, startImmediately bool) *Job {
 	ctx, cancel := context.WithCancel(context.Background())
 	return &Job{
 		interval: interval,
-		unit:     seconds,
+		unit:     Seconds,
 		lastRun:  time.Time{},
 		nextRun:  time.Time{},
 		jobFunction: jobFunction{

@@ -53,15 +53,15 @@ type schedulingUnit int
 
 const (
 	// default unit is seconds
-	milliseconds schedulingUnit = iota
-	seconds
-	minutes
-	hours
-	days
-	weeks
-	months
-	duration
-	crontab
+	Milliseconds schedulingUnit = iota
+	Seconds
+	Minutes
+	Hours
+	Days
+	Weeks
+	Months
+	Duration
+	Crontab
 )
 
 func callJobFuncWithParams(jobFunc interface{}, params []interface{}) {
